@@ -20,7 +20,8 @@ jobs:
         unityVersion: 
           - 2020.3.0f1
         testMode:
-          - all
+          - playmode
+          - editmode
     steps:
       # Checkout
       - uses: actions/checkout@v2
@@ -32,7 +33,21 @@ jobs:
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: |
             Library-
-      
+      #Run Tests
+      - uses: game-ci/unity-test-runner@v2
+        id: tests
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: ${{ matrix.unityVersion }}
+          artifactsPath: ${{ matrix.unityVersion }}-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ${{ matrix.unityVersion }} Test Results
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Test results for ${{ matrix.unityVersion }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
   buildForAllPlatforms:
     needs: runUnitTests
     name: Build for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
@@ -60,5 +75,21 @@ jobs:
           path: Library
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: |
-            Library-      
+            Library-
+      #Run Tests
+      #- uses: game-ci/unity-test-runner@v2
+      #  id: tests
+      #  env:
+      #    UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #  with:
+      #    unityVersion: ${{ matrix.unityVersion }}
+      #    testMode: ${{ matrix.testMode }}
+      #    artifactsPath: ${{ matrix.unityVersion }}-${{ matrix.testMode }}-artifacts
+      #    githubToken: ${{ secrets.GITHUB_TOKEN }}
+      #    checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} Test Results
+      #- uses: actions/upload-artifact@v2
+      #  if: always()
+      #  with:
+      #    name: Test results for ${{ matrix.unityVersion }} ${{ matrix.testMode }}
+      #    path: ${{ steps.tests.outputs.artifactsPath }}
   
