@@ -11,27 +11,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  buildForAllPlatforms:
-    name: Build for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
+  runUnitTests:
+    name: Run Unit Tests for ${{ matrix.unityVersion }} ${{ matrix.testMode }}
     runs-on: ubuntu-latest
     strategy: 
       fail-fast: false
       matrix:
         unityVersion: 
           - 2020.3.0f1
-        targetPlatform:
-          # - Android # Build an Android apk standalone app
-          # - iOS # Build an iOS Player
-          - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
-          # - StandaloneWindows # build a WIndows Standalone
-          - StandaloneWindows64 # build a Windows 64-bit Standalone
-          # - StandaloneLinux64 # build a Linux 64-bit Standalone 
-          - WebGL # WebGL
         testMode:
-          - playmode
-          - editmode
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+          - all
     steps:
       # Checkout
       - uses: actions/checkout@v2
@@ -59,4 +48,47 @@ jobs:
         with:
           name: Test results for ${{ matrix.unityVersion }} ${{ matrix.testMode }}
           path: ${{ steps.tests.outputs.artifactsPath }}
+  buildForAllPlatforms:
+    name: Build for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
+    runs-on: ubuntu-latest
+    strategy: 
+      fail-fast: false
+      matrix:
+        unityVersion: 
+          - 2020.3.0f1
+        targetPlatform:
+          # - Android # Build an Android apk standalone app
+          # - iOS # Build an iOS Player
+          - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
+          # - StandaloneWindows # build a WIndows Standalone
+          - StandaloneWindows64 # build a Windows 64-bit Standalone
+          # - StandaloneLinux64 # build a Linux 64-bit Standalone 
+          - WebGL # WebGL        
+    steps:
+      # Checkout
+      - uses: actions/checkout@v2
+      
+      # Cache
+      - uses: actions/cache@v1.1.0
+        with:
+          path: Library
+          key: Library-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-
+      #Run Tests
+      #- uses: game-ci/unity-test-runner@v2
+      #  id: tests
+      #  env:
+      #    UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #  with:
+      #    unityVersion: ${{ matrix.unityVersion }}
+      #    testMode: ${{ matrix.testMode }}
+      #    artifactsPath: ${{ matrix.unityVersion }}-${{ matrix.testMode }}-artifacts
+      #    githubToken: ${{ secrets.GITHUB_TOKEN }}
+      #    checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} Test Results
+      #- uses: actions/upload-artifact@v2
+      #  if: always()
+      #  with:
+      #    name: Test results for ${{ matrix.unityVersion }} ${{ matrix.testMode }}
+      #    path: ${{ steps.tests.outputs.artifactsPath }}
   
