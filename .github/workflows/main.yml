@@ -11,43 +11,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  runUnitTests:
-    name: Run Unit Tests for ${{ matrix.unityVersion }} ${{ matrix.testMode }}
-    runs-on: ubuntu-latest
-    strategy: 
-      fail-fast: false
-      matrix:
-        unityVersion: 
-          - 2020.3.0f1
-        testMode:
-          - all
-    steps:
-      # Checkout
-      - uses: actions/checkout@v2
-      
-      # Cache
-      - uses: actions/cache@v1.1.0
-        with:
-          path: Library
-          key: Library-${{ matrix.targetPlatform }}
-          restore-keys: |
-            Library-
-      #Run Tests
-      - uses: game-ci/unity-test-runner@v2
-        id: tests
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          unityVersion: ${{ matrix.unityVersion }}
-          testMode: ${{ matrix.testMode }}
-          artifactsPath: ${{ matrix.unityVersion }}-${{ matrix.testMode }}-artifacts
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} Test Results
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: Test results for ${{ matrix.unityVersion }} ${{ matrix.testMode }}
-          path: ${{ steps.tests.outputs.artifactsPath }}
   buildForAllPlatforms:
     name: Build for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
     runs-on: ubuntu-latest
@@ -75,20 +38,20 @@ jobs:
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: |
             Library-
+      
       #Run Tests
-      #- uses: game-ci/unity-test-runner@v2
-      #  id: tests
-      #  env:
-      #    UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-      #  with:
-      #    unityVersion: ${{ matrix.unityVersion }}
-      #    testMode: ${{ matrix.testMode }}
-      #    artifactsPath: ${{ matrix.unityVersion }}-${{ matrix.testMode }}-artifacts
-      #    githubToken: ${{ secrets.GITHUB_TOKEN }}
-      #    checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} Test Results
-      #- uses: actions/upload-artifact@v2
-      #  if: always()
-      #  with:
-      #    name: Test results for ${{ matrix.unityVersion }} ${{ matrix.testMode }}
-      #    path: ${{ steps.tests.outputs.artifactsPath }}
+      - uses: game-ci/unity-test-runner@v2
+        id: tests
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: ${{ matrix.unityVersion }}
+          artifactsPath: ${{ matrix.unityVersion }}-artifacts
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          checkName: ${{ matrix.unityVersion }} Test Results
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Test results for ${{ matrix.unityVersion }}
+          path: ${{ steps.tests.outputs.artifactsPath }}
   
