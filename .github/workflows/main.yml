@@ -86,7 +86,7 @@ jobs:
         with:
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          buildName: {{ matrix.targetPlatform }}-${{ matrix.unityVersion }}.${{ steps.myBuildStep.outputs.buildVersion }}
+          buildName: ${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}.${{ steps.myBuildStep.outputs.buildVersion }}
           versioning: Semantic
       - uses: actions/upload-artifact@v2
         with:
