@@ -86,10 +86,10 @@ jobs:
         with:
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
-          buildName: ${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}.${{ steps.myBuildStep.outputs.buildVersion }}
+          buildName: ${{ matrix.targetPlatform }}
           versioning: Semantic
       - uses: actions/upload-artifact@v2
         with:
-          name: Build-${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}.${{ steps.myBuildStep.outputs.buildVersion }}
-          path: build/${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}.${{ steps.myBuildStep.outputs.buildVersion }}
+          name: Build-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
   
