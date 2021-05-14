@@ -68,7 +68,9 @@ jobs:
     steps:
       # Checkout
       - uses: actions/checkout@v2
-      
+        with: 
+          fetchDepth: 0
+          lfs: true
       # Cache
       - uses: actions/cache@v1.1.0
         with:
@@ -76,20 +78,17 @@ jobs:
           key: Library-${{ matrix.targetPlatform }}
           restore-keys: |
             Library-
-      #Run Tests
-      #- uses: game-ci/unity-test-runner@v2
-      #  id: tests
-      #  env:
-      #    UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-      #  with:
-      #    unityVersion: ${{ matrix.unityVersion }}
-      #    testMode: ${{ matrix.testMode }}
-      #    artifactsPath: ${{ matrix.unityVersion }}-${{ matrix.testMode }}-artifacts
-      #    githubToken: ${{ secrets.GITHUB_TOKEN }}
-      #    checkName: ${{ matrix.unityVersion }} ${{ matrix.testMode }} Test Results
-      #- uses: actions/upload-artifact@v2
-      #  if: always()
-      #  with:
-      #    name: Test results for ${{ matrix.unityVersion }} ${{ matrix.testMode }}
-      #    path: ${{ steps.tests.outputs.artifactsPath }}
+      # Build
+      - uses: game-ci/unity-builder@v2
+        id: buildStep
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: ${{ matrix.unityVersion }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+          versioning: Semantic
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Build-${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}.${{ steps.myBuildStep.outputs.buildVersion }}
+          path: build/${{ matrix.targetPlatform }}-${{ matrix.unityVersion }}.${{ steps.myBuildStep.outputs.buildVersion }}
   
