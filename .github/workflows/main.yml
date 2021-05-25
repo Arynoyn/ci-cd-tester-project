@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         unityVersion: 
-          - 2020.3.0f1
+          - 2020.3.5f1
         testMode:
           - playmode
           - editmode
@@ -56,7 +56,7 @@ jobs:
       fail-fast: false
       matrix:
         unityVersion: 
-          - 2020.3.0f1
+          - 2020.3.5f1
         targetPlatform:
           # - Android # Build an Android apk standalone app
           # - iOS # Build an iOS Player
