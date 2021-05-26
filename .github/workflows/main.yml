@@ -50,18 +50,18 @@ jobs:
         with:
           name: Test results for ${{ matrix.unityVersion }}
           path: ${{ steps.tests.outputs.artifactsPath }}
-      - name: Write to Changelog
-        if: github.event.action == 'published'
-        env:
-          RELEASE_NOTES: ${{ github.event.release.body }}
-        run: echo "$RELEASE_NOTES" > fastlane/metadata/android/en-US/changelogs/default.txt
-      - name: Auto-Commit Changelog
-        if: github.event.action == 'published'
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          branch: master
-          file_pattern: fastlane/metadata/android/en-US/changelogs/*
-          commit_message: Update Changelog
+      # - name: Write to Changelog
+      #   if: github.event.action == 'published'
+      #   env:
+      #     RELEASE_NOTES: ${{ github.event.release.body }}
+      #   run: echo "$RELEASE_NOTES" > fastlane/metadata/android/en-US/changelogs/default.txt
+      # - name: Auto-Commit Changelog
+      #   if: github.event.action == 'published'
+      #   uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     branch: master
+      #     file_pattern: fastlane/metadata/android/en-US/changelogs/*
+      #     commit_message: Update Changelog
 
   buildWithLinux:
     name: Build for ${{ matrix.targetPlatform }} on version ${{ matrix.unityVersion }}
@@ -75,8 +75,8 @@ jobs:
         targetPlatform:
           # - Android # Build an Android apk standalone app
           # - iOS # Build an iOS Player
-          # - StandaloneWindows # build a Windows Standalone
-          # - StandaloneWindows64 # build a Windows 64-bit Standalone
+          - StandaloneWindows # build a Windows Standalone
+          - StandaloneWindows64 # build a Windows 64-bit Standalone
           - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
           - StandaloneLinux64 # build a Linux 64-bit Standalone 
           - WebGL # WebGL        
