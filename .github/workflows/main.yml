@@ -170,10 +170,8 @@ jobs:
       - name: Activate Unity
         uses: kuler90/activate-unity@v1
         with:
-          unity-license: ${{ secrets.UNITY_LICENSE }}
-          #unity-username: ${{ secrets.UNITY_EMAIL_2 }}
-          #unity-password: ${{ secrets.UNITY_PASSWORD_2 }}
-          #unity-serial: ${{ secrets.UNITY_SERIAL_2 }}
+          unity-username: ${{ secrets.UNITY_EMAIL }}
+          unity-password: ${{ secrets.UNITY_PASSWORD }}          
       - name: Build Unity
         uses: kuler90/build-unity@v1
         with:
