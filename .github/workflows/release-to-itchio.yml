@@ -1,3 +1,4 @@
+name: Release to itch.io
 on:
   release:
     types: [published]
