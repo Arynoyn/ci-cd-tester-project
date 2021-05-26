@@ -17,16 +17,13 @@ on:
 
 jobs:
   unitTests:
-    name: Run Unit Tests for ${{ matrix.unityVersion }} ${{ matrix.testMode }}
+    name: Run Unit Tests for Unity version ${{ matrix.unityVersion }}
     runs-on: ubuntu-latest
     strategy: 
       fail-fast: false
       matrix:
         unityVersion: 
           - 2020.3.5f1
-    #    testMode:
-    #      - playmode
-    #      - editmode
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -78,6 +75,8 @@ jobs:
         targetPlatform:
           # - Android # Build an Android apk standalone app
           # - iOS # Build an iOS Player
+          # - StandaloneWindows # build a Windows Standalone
+          # - StandaloneWindows64 # build a Windows 64-bit Standalone
           - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
           - StandaloneLinux64 # build a Linux 64-bit Standalone 
           - WebGL # WebGL        
@@ -124,83 +123,83 @@ jobs:
         if: github.event.action == 'published' && matrix.targetPlatform == 'StandaloneLinux64'
         with:
           args: zip -qq -r build/build-${{ matrix.targetPlatform }}.zip build/${{ matrix.targetPlatform }}
-      #- name: Upload build-${{ matrix.targetPlatform }}.zip to GitHub Release
-      #  uses: svenstaro/upload-release-action@v2
-      #  if: github.event.action == 'published' && matrix.targetPlatform == 'StandaloneLinux64'
-      #  with:
-      #    repo_token: ${{ secrets.CGS_PAT }}
-      #    asset_name: build-${{ matrix.targetPlatform }}.zip
-      #    file: build/build-${{ matrix.targetPlatform }}.zip
-      #    tag: ${{ github.ref }}
-      #    overwrite: true
-      #    body:  ${{ github.event.release.body }}
+      - name: Upload build-${{ matrix.targetPlatform }}.zip to GitHub Release
+        uses: svenstaro/upload-release-action@v2
+        if: github.event.action == 'published' && matrix.targetPlatform == 'StandaloneLinux64'
+        with:
+          repo_token: ${{ secrets.GH_CREDENTIALS }}
+          asset_name: build-${{ matrix.targetPlatform }}.zip
+          file: build/build-${{ matrix.targetPlatform }}.zip
+          tag: ${{ github.ref }}
+          overwrite: true
+          body:  ${{ github.event.release.body }}
       #- name: Upload build-${{ matrix.targetPlatform }}.zip to itch.io
 
-  buildWithWindows:
-    name: Build for ${{ matrix.targetPlatform }}
-    runs-on: windows-latest
-    needs: unitTests
-    strategy:
-      fail-fast: false
-      matrix:
-        targetPlatform:
-          - StandaloneWindows # build a Windows Standalone
-          - StandaloneWindows64 # build a Windows 64-bit Standalone
-          - WSAPlayer
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          lfs: true
-      - name: Get Version
-        id: versioning
-        uses: paulhatch/semantic-version@v4.0.2
-        with:
-          format: "${major}.${minor}.${patch}"
-      - name: Setup Unity IL2CPP
-        uses: kuler90/setup-unity@v1
-        with:
-          unity-modules: windows-il2cpp
-      - name: Setup Unity UWP
-        uses: kuler90/setup-unity@v1
-        if: matrix.targetPlatform == 'WSAPlayer'
-        with:
-          unity-modules: universal-windows-platform
-      - name: Activate Unity
-        uses: kuler90/activate-unity@v1
-        with:
-          unity-username: ${{ secrets.UNITY_EMAIL }}
-          unity-password: ${{ secrets.UNITY_PASSWORD }}          
-      - name: Build Unity
-        uses: kuler90/build-unity@v1
-        with:
-          build-path: build/${{ matrix.targetPlatform }}
-          build-target: ${{ matrix.targetPlatform }}
-          # build-method: Cgs.Editor.BuildCgs.BuildOptions
-          build-version: ${{ steps.versioning.outputs.version }}
-      - name: Upload Build
-        uses: actions/upload-artifact@v2
-        if: github.event.action == 'published' || contains(github.event.inputs.mode, 'release')
-        with:
-          name: build-${{ matrix.targetPlatform }}
-          path: build/${{ matrix.targetPlatform }}
-      - name: Zip build/${{ matrix.targetPlatform }}
-        uses: papeloto/action-zip@v1
-        if: github.event.action == 'published' && matrix.targetPlatform != 'WSAPlayer'
-        with:
-          files: build/${{ matrix.targetPlatform }}/
-          dest: build/build-${{ matrix.targetPlatform }}.zip
-      #- name: Upload build-${{ matrix.targetPlatform }}.zip to GitHub Release
-      #  uses: svenstaro/upload-release-action@v2
-      #  if: github.event.action == 'published' && matrix.targetPlatform != 'WSAPlayer'
-      #  with:
-      #    repo_token: ${{ secrets.CGS_PAT }}
-      #    asset_name: cgs-${{ matrix.targetPlatform }}.zip
-      #    file: build/cgs-${{ matrix.targetPlatform }}.zip
-      #    tag: ${{ github.ref }}
-      #    overwrite: true
-      #    body: ${{ github.event.release.body }}
+  # buildWithWindows:
+  #   name: Build for ${{ matrix.targetPlatform }}
+  #   runs-on: windows-latest
+  #   needs: unitTests
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       targetPlatform:
+  #         - StandaloneWindows # build a Windows Standalone
+  #         - StandaloneWindows64 # build a Windows 64-bit Standalone
+  #         - WSAPlayer
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
+  #       with:
+  #         fetch-depth: 0
+  #         lfs: true
+  #     - name: Get Version
+  #       id: versioning
+  #       uses: paulhatch/semantic-version@v4.0.2
+  #       with:
+  #         format: "${major}.${minor}.${patch}"
+  #     - name: Setup Unity IL2CPP
+  #       uses: kuler90/setup-unity@v1
+  #       with:
+  #         unity-modules: windows-il2cpp
+  #     - name: Setup Unity UWP
+  #       uses: kuler90/setup-unity@v1
+  #       if: matrix.targetPlatform == 'WSAPlayer'
+  #       with:
+  #         unity-modules: universal-windows-platform
+  #     - name: Activate Unity
+  #       uses: kuler90/activate-unity@v1
+  #       with:
+  #         unity-username: ${{ secrets.UNITY_EMAIL }}
+  #         unity-password: ${{ secrets.UNITY_PASSWORD }}          
+  #     - name: Build Unity
+  #       uses: kuler90/build-unity@v1
+  #       with:
+  #         build-path: build/${{ matrix.targetPlatform }}
+  #         build-target: ${{ matrix.targetPlatform }}
+  #         # build-method: Cgs.Editor.BuildCgs.BuildOptions
+  #         build-version: ${{ steps.versioning.outputs.version }}
+  #     - name: Upload Build
+  #       uses: actions/upload-artifact@v2
+  #       if: github.event.action == 'published' || contains(github.event.inputs.mode, 'release')
+  #       with:
+  #         name: build-${{ matrix.targetPlatform }}
+  #         path: build/${{ matrix.targetPlatform }}
+  #     - name: Zip build/${{ matrix.targetPlatform }}
+  #       uses: papeloto/action-zip@v1
+  #       if: github.event.action == 'published' && matrix.targetPlatform != 'WSAPlayer'
+  #       with:
+  #         files: build/${{ matrix.targetPlatform }}/
+  #         dest: build/build-${{ matrix.targetPlatform }}.zip
+  #     - name: Upload build-${{ matrix.targetPlatform }}.zip to GitHub Release
+  #       uses: svenstaro/upload-release-action@v2
+  #       if: github.event.action == 'published' && matrix.targetPlatform != 'WSAPlayer'
+  #       with:
+  #         repo_token: ${{ secrets.GH_CREDENTIALS }}
+  #         asset_name: build-${{ matrix.targetPlatform }}.zip
+  #         file: build/build-${{ matrix.targetPlatform }}.zip
+  #         tag: ${{ github.ref }}
+  #         overwrite: true
+  #         body: ${{ github.event.release.body }}
   
   releaseToGitHubPages:
     name: Release to GitHub Pages

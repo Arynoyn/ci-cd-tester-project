@@ -3,7 +3,7 @@ on:
     types: [published]
 
 jobs:
-  release_windows:
+  release_windows_to_itch:
     runs-on: ubuntu-latest
     steps:
       - name: download Windows
@@ -22,7 +22,7 @@ jobs:
           ITCH_USER: Arynoyn
           PACKAGE: build-windows.zip
           VERSION: ${{ steps.download-windows.outputs.version }}
-  release_macos:
+  release_macos_to_itch:
     runs-on: ubuntu-latest
     steps:
       - name: download MacOS
@@ -41,7 +41,7 @@ jobs:
           ITCH_USER: Arynoyn
           PACKAGE: build-macos.zip
           VERSION: ${{ steps.download-macos.outputs.version }}
-  release_linux:
+  release_linux_to_itch:
     runs-on: ubuntu-latest
     steps:
       - name: download Linux
@@ -60,22 +60,41 @@ jobs:
           ITCH_USER: Arynoyn
           PACKAGE: build-linux.zip
           VERSION: ${{ steps.download-linux.outputs.version }}
-  release_html:
+  release_webgl_to_itch:
     runs-on: ubuntu-latest
     steps:
-      - name: download HTML5
-        id: download-html
+      - name: download WEBGL
+        id: download-webgl
         uses: dsaltares/fetch-gh-release-asset@master
         with:
           version: "latest"
-          file: build-html.zip
+          file: build-webgl.zip
           token: "${{ secrets.GH_CREDENTIALS }}"
-      - name: deploy to itch.io (HTML5)
+      - name: deploy to itch.io (WEBGL)
         uses: josephbmanley/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
           CHANNEL: html
           ITCH_GAME: unity-ci-cd-tester
           ITCH_USER: Arynoyn
-          PACKAGE: build-html.zip
-          VERSION: ${{ steps.download-html.outputs.version }}
+          PACKAGE: build-webgl.zip
+          VERSION: ${{ steps.download-webgl.outputs.version }}
+  # release_html_to_itch:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: download HTML5
+  #       id: download-html
+  #       uses: dsaltares/fetch-gh-release-asset@master
+  #       with:
+  #         version: "latest"
+  #         file: build-html.zip
+  #         token: "${{ secrets.GH_CREDENTIALS }}"
+  #     - name: deploy to itch.io (HTML5)
+  #       uses: josephbmanley/butler-publish-itchio-action@master
+  #       env:
+  #         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+  #         CHANNEL: html
+  #         ITCH_GAME: unity-ci-cd-tester
+  #         ITCH_USER: Arynoyn
+  #         PACKAGE: build-html.zip
+  #         VERSION: ${{ steps.download-html.outputs.version }}
