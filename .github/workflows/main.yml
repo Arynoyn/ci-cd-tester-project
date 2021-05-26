@@ -75,10 +75,10 @@ jobs:
         targetPlatform:
           # - Android # Build an Android apk standalone app
           # - iOS # Build an iOS Player
-          - StandaloneWindows # build a Windows Standalone
-          - StandaloneWindows64 # build a Windows 64-bit Standalone
-          - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
-          - StandaloneLinux64 # build a Linux 64-bit Standalone 
+          # - StandaloneWindows # build a Windows Standalone
+          # - StandaloneWindows64 # build a Windows 64-bit Standalone
+          # - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
+          # - StandaloneLinux64 # build a Linux 64-bit Standalone 
           - WebGL # WebGL        
     steps:
       - name: Free Disk Space for Android
@@ -120,12 +120,12 @@ jobs:
           path: build/${{ matrix.targetPlatform }}
       - name: Zip build/${{ matrix.targetPlatform }}
         uses: montudor/action-zip@v1
-        if: github.event.action == 'published' && matrix.targetPlatform == 'StandaloneLinux64'
+        # if: github.event.action == 'published' && matrix.targetPlatform == 'StandaloneLinux64'
         with:
           args: zip -qq -r build/build-${{ matrix.targetPlatform }}.zip build/${{ matrix.targetPlatform }}
       - name: Upload build-${{ matrix.targetPlatform }}.zip to GitHub Release
         uses: svenstaro/upload-release-action@v2
-        if: github.event.action == 'published' && matrix.targetPlatform == 'StandaloneLinux64'
+        # if: github.event.action == 'published' && matrix.targetPlatform == 'StandaloneLinux64'
         with:
           repo_token: ${{ secrets.GH_CREDENTIALS }}
           asset_name: build-${{ matrix.targetPlatform }}.zip
@@ -226,28 +226,48 @@ jobs:
           file_pattern: docs/**
           commit_message: Deploy to GitHub Pages
   
-  release_macos_to_itch:
-    name: Release Mac Build to itch.io
+  release_webgl_to_itch:
     runs-on: ubuntu-latest
-    if: github.event.action == 'published' || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'web'))
-    needs: buildWithLinux
     steps:
-      - name: download MacOS
-        id: download-macos
+      - name: download WEBGL
+        id: download-webgl
         uses: dsaltares/fetch-gh-release-asset@master
         with:
           version: "latest"
-          file: build-macos.zip
+          file: build-webgl.zip
           token: "${{ secrets.GH_CREDENTIALS }}"
-      - name: deploy to itch.io (MacOS)
+      - name: deploy to itch.io (WEBGL)
         uses: josephbmanley/butler-publish-itchio-action@master
         env:
           BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
-          CHANNEL: mac
+          CHANNEL: html
           ITCH_GAME: unity-ci-cd-tester
           ITCH_USER: Arynoyn
-          PACKAGE: build-macos.zip
-          VERSION: ${{ steps.download-macos.outputs.version }}
+          PACKAGE: build-webgl.zip
+          VERSION: ${{ steps.download-webgl.outputs.version }}
+  
+  # release_macos_to_itch:
+  #   name: Release Mac Build to itch.io
+  #   runs-on: ubuntu-latest
+  #   if: github.event.action == 'published' || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'web'))
+  #   needs: buildWithLinux
+  #   steps:
+  #     - name: download MacOS
+  #       id: download-macos
+  #       uses: dsaltares/fetch-gh-release-asset@master
+  #       with:
+  #         version: "latest"
+  #         file: build-StandaloneOSX.zip
+  #         token: "${{ secrets.GH_CREDENTIALS }}"
+  #     - name: deploy to itch.io (MacOS)
+  #       uses: josephbmanley/butler-publish-itchio-action@master
+  #       env:
+  #         BUTLER_CREDENTIALS: ${{ secrets.BUTLER_CREDENTIALS }}
+  #         CHANNEL: mac
+  #         ITCH_GAME: unity-ci-cd-tester
+  #         ITCH_USER: Arynoyn
+  #         PACKAGE: build-StandaloneOSX.zip
+  #         VERSION: ${{ steps.download-macos.outputs.version }}
 
   # releaseToGooglePlay:
   #   name: Release to the Google Play Store
