@@ -227,7 +227,9 @@ jobs:
           commit_message: Deploy to GitHub Pages
   
   release_webgl_to_itch:
+    name: Release WebGL to itch.io
     runs-on: ubuntu-latest
+    needs: buildWithLinux
     steps:
       - name: download WEBGL
         id: download-webgl
