@@ -219,7 +219,7 @@ jobs:
         with:
           branch: gh-pages # The branch the action should deploy to.
           folder: build/WebGL # The folder the action should deploy.
-          target-folder: build/WebGL # The folder the action should be deployed to within the deployment branch
+          target-folder: build # The folder the action should be deployed to within the deployment branch
       # - name: Copy the WebGL build artifacts to the GitHub Pages directory
       #   env:
       #     WEBGL_BUILD_PATH: ${{ format('{0}/build/WebGL', github.workspace) }}
