@@ -236,7 +236,7 @@ jobs:
         uses: dsaltares/fetch-gh-release-asset@master
         with:
           version: "latest"
-          file: build-webgl.zip
+          file: build-WebGL.zip
           token: "${{ secrets.GH_CREDENTIALS }}"
       - name: deploy to itch.io (WEBGL)
         uses: josephbmanley/butler-publish-itchio-action@master
@@ -245,7 +245,7 @@ jobs:
           CHANNEL: html
           ITCH_GAME: unity-ci-cd-tester
           ITCH_USER: Arynoyn
-          PACKAGE: build-webgl.zip
+          PACKAGE: build-WebGL.zip
           VERSION: ${{ steps.download-webgl.outputs.version }}
   
   # release_macos_to_itch:
