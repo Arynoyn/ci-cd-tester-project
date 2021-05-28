@@ -87,7 +87,8 @@ jobs:
       matrix:
         unityVersion: 
           - 2020.3.5f1
-        targetPlatform: ${{ env.targetPlatforms }}
+        targetPlatform: 
+          ${{ env.targetPlatforms }}
           # TODO: Learn how to include JUST the platform from the dispatch
           # - Android # Build an Android apk standalone app
           # - iOS # Build an iOS Player
@@ -96,7 +97,11 @@ jobs:
           # - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
           # - StandaloneLinux64 # build a Linux 64-bit Standalone 
           # - WebGL # WebGL        
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
+      - id: set-matrix
+        run: echo "::set-output name=matrix::" + toJSON(${{matrix.}})
       - name: Free Disk Space for Android
         if: matrix.targetPlatform == 'Android'
         run: |
