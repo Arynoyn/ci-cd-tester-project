@@ -4,6 +4,12 @@ on:
     types: [published]
 
 jobs:
+  dummy-job:
+    name: Dummy Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Dummy Message
+        run: echo 'No Jobs Active'
 # releaseToGooglePlay:
 #   name: Release to the Google Play Store
 #   runs-on: ubuntu-latest

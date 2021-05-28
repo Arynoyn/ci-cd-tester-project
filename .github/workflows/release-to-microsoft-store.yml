@@ -1,9 +1,15 @@
-  name: CD - Release to Microsoft Store
+name: CD - Release to Microsoft Store
 on:
   release:
     types: [published]
 
 jobs:
+  dummy-job:
+    name: Dummy Job
+    runs-on: windows-latest
+    steps:
+      - name: Print Dummy Message
+        run: echo 'No Jobs Active'
 # releaseToMicrosoftStore:
 #   name: Release to the Microsoft Store
 #   runs-on: windows-latest

@@ -4,6 +4,12 @@ on:
     types: [published]
 
 jobs:
+  dummy-job:
+    name: Dummy Job
+    runs-on: macos-latest
+    steps:
+      - name: Print Dummy Message
+        run: echo 'No Jobs Active'
 # releaseToAppStore:
 #   name: Release to the App Store
 #   runs-on: macos-latest
