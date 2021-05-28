@@ -7,7 +7,7 @@ jobs:
   release_webgl_to_itch:
   name: Release WebGL to itch.io
   runs-on: ubuntu-latest
-      steps:
+    steps:
     - name: download WEBGL
       id: download-webgl
       uses: dsaltares/fetch-gh-release-asset@master
