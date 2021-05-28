@@ -219,7 +219,7 @@ jobs:
     name: Release to GitHub Pages
     runs-on: ubuntu-latest
     needs: buildWithLinux
-    if: (github.event.action == 'published' && contains(jobs.buildWithLinux.strategy.matrix.targetPlatform, 'WebGL')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Web')) 
+    if: (github.event.action == 'published' && contains(needs.strategy.matrix.targetPlatform, 'WebGL')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Web')) 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -243,7 +243,7 @@ jobs:
     name: Release WebGL to itch.io
     runs-on: ubuntu-latest
     needs: buildWithLinux
-    if: (github.event.action == 'published' && contains(jobs.buildWithLinux.strategy.matrix.targetPlatform, 'WebGL')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Web'))
+    if: (github.event.action == 'published' && contains(needs.strategy.matrix.targetPlatform, 'WebGL')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Web'))
     steps:
       - name: download WEBGL
         id: download-webgl
@@ -266,7 +266,7 @@ jobs:
     name: Release Windows (32-Bit) to itch.io
     runs-on: ubuntu-latest
     needs: buildWithLinux
-    if: (github.event.action == 'published' && contains(jobs.buildWithLinux.strategy.matrix.targetPlatform, 'StandaloneWindows')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Windows'))
+    if: (github.event.action == 'published' && contains(needs.strategy.matrix.targetPlatform, 'StandaloneWindows')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Windows'))
     steps:
       - name: download Windows
         id: download-windows
@@ -289,7 +289,7 @@ jobs:
   #   name: Release Windows (64-Bit) to itch.io
   #   runs-on: ubuntu-latest
   #   needs: buildWithLinux
-  #   if: (github.event.action == 'published' && contains(jobs.buildWithLinux.strategy.matrix.targetPlatform, 'StandaloneWindows64')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Windows'))
+  #   if: (github.event.action == 'published' && contains(needs.strategy.matrix.targetPlatform, 'StandaloneWindows64')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Windows'))
   #   steps:
   #     - name: download Windows
   #       id: download-windows-64
@@ -312,7 +312,7 @@ jobs:
     name: Release Mac OSX to itch.io
     runs-on: ubuntu-latest
     needs: buildWithLinux
-    if: (github.event.action == 'published' && contains(jobs.buildWithLinux.strategy.matrix.targetPlatform, 'StandaloneOSX')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Mac'))
+    if: (github.event.action == 'published' && contains(needs.strategy.matrix.targetPlatform, 'StandaloneOSX')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Mac'))
     steps:
       - name: download MacOS
         id: download-macos
@@ -335,7 +335,7 @@ jobs:
   #   name: Release Linux (64-bit) to itch.io
   #   runs-on: ubuntu-latest
   #   needs: buildWithLinux
-  #   if: (github.event.action == 'published' && contains(jobs.buildWithLinux.strategy.matrix.targetPlatform, 'StandaloneLinux64')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Linux'))
+  #   if: (github.event.action == 'published' && contains(needs.strategy.matrix.targetPlatform, 'StandaloneLinux64')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Linux'))
   #   steps:
   #     - name: download Linux
   #       id: download-linux
@@ -358,7 +358,7 @@ jobs:
   #   name: Release Android to itch.io
   #   runs-on: ubuntu-latest
   #   needs: buildWithLinux
-  #   if: (github.event.action == 'published' && contains(jobs.buildWithLinux.strategy.matrix.targetPlatform, 'Android'))  || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Android'))
+  #   if: (github.event.action == 'published' && contains(needs.strategy.matrix.targetPlatform, 'Android'))  || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Android'))
   #   steps:
   #     - name: download Android
   #       id: download-android
@@ -381,7 +381,7 @@ jobs:
   #   name: Release HTML5 to itch.io
   #   runs-on: ubuntu-latest
   #   needs: buildWithLinux
-  #   if: (github.event.action == 'published' && contains(jobs.buildWithLinux.strategy.matrix.targetPlatform, 'HTML5'))  || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'html'))
+  #   if: (github.event.action == 'published' && contains(needs.strategy.matrix.targetPlatform, 'HTML5'))  || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'html'))
   #   steps:
   #     - name: download HTML5
   #       id: download-html
