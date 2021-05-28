@@ -14,6 +14,15 @@ on:
         description: 'check OR release (platform)'
         required: true
         default: 'check'
+env: 
+  targetPlatforms: 
+    # - Android # Build an Android apk standalone app
+    # - iOS # Build an iOS Player
+    - StandaloneWindows # build a Windows Standalone
+    # - StandaloneWindows64 # build a Windows 64-bit Standalone
+    - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
+    # - StandaloneLinux64 # build a Linux 64-bit Standalone 
+    - WebGL # WebGL  
 
 jobs:
 #-----------------------------------------------------------------------
@@ -78,15 +87,15 @@ jobs:
       matrix:
         unityVersion: 
           - 2020.3.5f1
-        targetPlatform:
+        targetPlatform: ${{ env.targetPlatforms }}
           # TODO: Learn how to include JUST the platform from the dispatch
           # - Android # Build an Android apk standalone app
           # - iOS # Build an iOS Player
-          - StandaloneWindows # build a Windows Standalone
+          # - StandaloneWindows # build a Windows Standalone
           # - StandaloneWindows64 # build a Windows 64-bit Standalone
-          - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
+          # - StandaloneOSX # build a MacOS Standalone (Intel 64-bit)
           # - StandaloneLinux64 # build a Linux 64-bit Standalone 
-          - WebGL # WebGL        
+          # - WebGL # WebGL        
     steps:
       - name: Free Disk Space for Android
         if: matrix.targetPlatform == 'Android'
@@ -219,7 +228,7 @@ jobs:
     name: Release to GitHub Pages
     runs-on: ubuntu-latest
     needs: buildWithLinux
-    if: (github.event.action == 'published' && contains(needs.strategy.matrix.targetPlatform, 'WebGL')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Web')) 
+    if: (github.event.action == 'published' && contains(env.targetPlatforms, 'WebGL')) || (contains(github.event.inputs.mode, 'release') && contains(github.event.inputs.mode, 'Web')) 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
